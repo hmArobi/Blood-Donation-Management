@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'BackgroundGradient.dart';
 import 'LoginScreen.dart';
-import 'main.dart';
 
 
 class SelectionScreen extends StatelessWidget {

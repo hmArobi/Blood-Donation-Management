@@ -1,8 +1,8 @@
 import 'package:fb_3/BackgroundGradient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'DonorDashboard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
@@ -39,6 +39,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
     areaController.dispose();
     super.dispose();
   }
+
+  // logic for firebase
+
+
+  // Function to store data in Firebase Realtime Database
+  void _storeDataInFirebase() async{
+    // Get a reference to the Firestore collection
+    CollectionReference donors = FirebaseFirestore.instance.collection('donors');
+
+    // Generate a unique key for each donor
+    // String donorId = ref.push().key!;
+
+    // Store data in Firebase
+    await donors.add({
+      "name": nameController.text,
+      "contact": contactController.text,
+      "bloodGroup": selectedBloodGroup,
+      "gender": selectedGender,
+      "dob": dobController.text,
+      "district": areaController.text,
+      "password": passwordController.text, // Note: Storing passwords in plain text is not secure. Use Firebase Authentication for secure password handling.
+    }).then((_) {
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration Successful')),
+      );
+
+      // Navigate to the DonorDashboard
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => DonorDashboard()),
+      );
+    }).catchError((error) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to register: $error')),
+      );
+    });
+  }
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -185,8 +229,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
 
                 //Area Field
-
-                // Name field
                 TextFormField(
                   controller: areaController,
                   decoration: InputDecoration(
@@ -228,22 +270,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Registration Successful')),
-                      );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DonorDashboard()),
-                      );
-
+                      _storeDataInFirebase(); // Call the function to store data in Firebase
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[700],
                   ),
                   child: Text(
-                    "Submit",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 18),
-                    // style: TextStyle(color: Colors.white),
+                    "Submit",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   ),
                 ),
               ],
