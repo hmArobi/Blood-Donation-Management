@@ -45,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       try {
         // Create user with email and password
         UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-          email: '${nameController.text}@blooddonation.com', // Use name as email (for simplicity)
+          email: '${contactController.text}@blooddonation.com', // Use contact number as email (for simplicity)
           password: passwordController.text,
         );
 
