@@ -1,10 +1,8 @@
 import 'package:fb_3/BackgroundGradient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'DonorDashboard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-
+import 'DonorDashboard.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -12,7 +10,9 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _formKey = GlobalKey<FormState>(); // Key for form validation
+  final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Controllers for text fields
   final nameController = TextEditingController();
@@ -40,248 +40,177 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  // logic for firebase
+  Future<void> _registerDonor() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        // Create user with email and password
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: '${nameController.text}@blooddonation.com', // Use name as email (for simplicity)
+          password: passwordController.text,
+        );
 
+        // Store donor data in Firestore
+        await _firestore.collection('donors').doc(userCredential.user!.uid).set({
+          "name": nameController.text,
+          "contact": contactController.text,
+          "bloodGroup": selectedBloodGroup,
+          "gender": selectedGender,
+          "dob": dobController.text,
+          "district": areaController.text,
+          "lastDonationDate": null, // Initialize to null
+          "donationHistory": [], // Initialize empty donation history
+        });
 
-  // Function to store data in Firebase Realtime Database
-  void _storeDataInFirebase() async{
-    // Get a reference to the Firestore collection
-    CollectionReference donors = FirebaseFirestore.instance.collection('donors');
-
-    // Generate a unique key for each donor
-    // String donorId = ref.push().key!;
-
-    // Store data in Firebase
-    await donors.add({
-      "name": nameController.text,
-      "contact": contactController.text,
-      "bloodGroup": selectedBloodGroup,
-      "gender": selectedGender,
-      "dob": dobController.text,
-      "district": areaController.text,
-      "password": passwordController.text, // Note: Storing passwords in plain text is not secure. Use Firebase Authentication for secure password handling.
-    }).then((_) {
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration Successful')),
-      );
-
-      // Navigate to the DonorDashboard
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => DonorDashboard()),
-      );
-    }).catchError((error) {
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to register: $error')),
-      );
-    });
+        // Navigate to DonorDashboard
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DonorDashboard()),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    }
   }
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Donor Registration",style: TextStyle(fontSize: 28,fontWeight: FontWeight.bold),),
-        centerTitle: true, // Centers the title
+        title: Text("Donor Registration", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       body: BackgroundGradient(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey, // Form key for validation
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Name field
-                TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Full Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+
+                  // Name Field
+                  TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(labelText: 'Full Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (value) => value!.isEmpty ? 'Enter your name' : null,
+                  ),
+                  SizedBox(height: 10),
+
+
+                  //Contact Number Field
+                  TextFormField(
+                    controller: contactController,
+                    decoration: InputDecoration(labelText: 'Contact Number',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (value) => value!.isEmpty ? 'Enter your contact number' : null,
+                  ),
+                  SizedBox(height: 10),
+
+
+                  //Blood Group Dropdown
+                  DropdownButtonFormField<String>(
+                    value: selectedBloodGroup,
+                    decoration: InputDecoration(labelText: 'Blood Group',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    items: bloodGroups.map((group) => DropdownMenuItem(value: group, child: Text(group))).toList(),
+                    onChanged: (value) => setState(() => selectedBloodGroup = value),
+                    validator: (value) => value == null ? 'Select your blood group' : null,
+                  ),
+                  SizedBox(height: 10),
+
+
+                  //Gender Select
+                  DropdownButtonFormField<String>(
+                    value: selectedGender,
+                    decoration: InputDecoration(labelText: 'Gender',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    items: genders.map((gender) => DropdownMenuItem(value: gender, child: Text(gender))).toList(),
+                    onChanged: (value) => setState(() => selectedGender = value),
+                    validator: (value) => value == null ? 'Select your gender' : null,
+                  ),
+                  SizedBox(height: 10),
+
+
+                  //Date of Birth Select
+                  TextFormField(
+                    controller: dobController,
+                    decoration: InputDecoration(labelText: 'Date of Birth',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (pickedDate != null) {
+                        dobController.text = pickedDate.toIso8601String().split('T')[0];
+                      }
+                    },
+                    validator: (value) => value!.isEmpty ? 'Select your date of birth' : null,
+                  ),
+                  SizedBox(height: 10),
+
+
+                  //Area selection
+                  TextFormField(
+                    controller: areaController,
+                    decoration: InputDecoration(labelText: 'District',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (value) => value!.isEmpty ? 'Enter your district' : null,
+                  ),
+                  SizedBox(height: 10),
+
+
+                  //Password  Field
+                  TextFormField(
+                    controller: passwordController,
+                    decoration: InputDecoration(labelText: 'Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    obscureText: true,
+                    validator: (value) => value!.isEmpty ? 'Enter a password' : null,
+                  ),
+                  SizedBox(height: 20),
+
+
+                  //Button
+                  ElevatedButton(
+                    onPressed: _registerDonor,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red[700],
+                    ),
+                    child: Text("Submit",
+                      style: TextStyle(fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name'; // Validation message
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-
-
-                // Contact Number field
-                TextFormField(
-                  controller: contactController,
-                  decoration: InputDecoration(
-                    labelText: 'Contact Number',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  keyboardType: TextInputType.phone,  //keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your contact number';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-
-
-                // Blood Group dropdown
-                DropdownButtonFormField<String>(
-                  value: selectedBloodGroup,
-                  decoration: InputDecoration(
-                    labelText: 'Blood Group',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  items: bloodGroups.map((String bloodGroup) {
-                    return DropdownMenuItem<String>(
-                      value: bloodGroup,
-                      child: Text(bloodGroup),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedBloodGroup = newValue;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select your blood group';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-
-
-                // Gender dropdown
-                DropdownButtonFormField<String>(
-                  value: selectedGender,
-                  decoration: InputDecoration(
-                    labelText: 'Gender',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  items: genders.map((String gender) {
-                    return DropdownMenuItem<String>(
-                      value: gender,
-                      child: Text(gender),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedGender = newValue;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select your gender';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-
-
-                // Date of Birth field
-                TextFormField(
-                  controller: dobController,
-                  decoration: InputDecoration(
-                    labelText: 'Date of Birth',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
-                    );
-                    if (pickedDate != null) {
-                      dobController.text = pickedDate.toString().split(" ")[0];
-                    }
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select your date of birth';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-
-
-                //Area Field
-                TextFormField(
-                  controller: areaController,
-                  decoration: InputDecoration(
-                    labelText: 'District',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your District'; // Validation message
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-
-
-                // Password field
-                TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-
-                // Submit button
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _storeDataInFirebase(); // Call the function to store data in Firebase
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[700],
-                  ),
-                  child: Text(
-                    "Submit",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
