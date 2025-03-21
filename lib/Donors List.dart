@@ -54,6 +54,8 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
     return DateTime.now().difference(lastDonationDate).inDays >= 120;
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,27 +71,31 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                 children: [
 
                   // Blood Group Filter
-                  DropdownButtonFormField<String>(
-                    value: _selectedBloodGroup,
-                    decoration: InputDecoration(
-                      labelText: 'Filter by Blood Group',
-                      prefixIcon: Icon(Icons.bloodtype, color: Colors.red[700]),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Container(
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedBloodGroup,
+                      decoration: InputDecoration(
+                        labelText: 'Filter by Blood Group',
+                        prefixIcon: Icon(Icons.bloodtype, color: Colors.red[700]),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
+                      style: TextStyle(color: Colors.black),
+                      dropdownColor: Colors.white,
+                      items: ['All', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((group) {
+                        return DropdownMenuItem(
+                          value: group,
+                          child: Text(group,style: TextStyle(color: Colors.black)),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedBloodGroup = value!;
+                          _filterDonors();
+                        });
+                      },
                     ),
-                    items: ['All', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((group) {
-                      return DropdownMenuItem(
-                        value: group,
-                        child: Text(group),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedBloodGroup = value!;
-                        _filterDonors();
-                      });
-                    },
                   ),
 
                   SizedBox(height: 10),
@@ -103,6 +109,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
+                      style: TextStyle(color: Colors.black),
                     onChanged: (value) {
                       setState(() {
                         _districtQuery = value;
@@ -122,10 +129,12 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                         borderRadius: BorderRadius.circular(12),
                     ),
                     ),
+                    style: TextStyle(color: Colors.black),
+                    dropdownColor: Colors.white,
                     items: ['All', 'AVAILABLE', 'RECHARGING'].map((status) {
                       return DropdownMenuItem(
                         value: status,
-                        child: Text(status),
+                        child: Text(status,style: TextStyle(color: Colors.black)),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -209,7 +218,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                         child: IconButton(
                           icon: Icon(Icons.phone, color: Colors.red[700]),
                           onPressed: () {
-                            // Implement call functionality
+                            // Implement Function to Call the donor
                           },
                         ),
                       ),

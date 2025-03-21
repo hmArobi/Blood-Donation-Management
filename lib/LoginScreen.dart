@@ -1,7 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fb_3/BackgroundGradient.dart';
-import 'package:fb_3/DonorDashboard.dart';
+import 'package:blood_bank/BackgroundGradient.dart';
+import 'package:blood_bank/DonorDashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   ),
                   keyboardType: TextInputType.phone,
+                  style: TextStyle(color: Colors.black),
                 ),
                 SizedBox(height: 20),
                 TextField(
@@ -117,19 +118,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   obscureText: true,
+                  style: TextStyle(color: Colors.black),
                 ),
                 SizedBox(height: 20),
-                // ElevatedButton(
-                //   onPressed: () {
-                //     // Add login logic here
-                //     final contact = _contactController.text;
-                //     final password = _passwordController.text;
-                //     print('Contact: $contact, Password: $password');
-                //   },
-                //   style: ElevatedButton.styleFrom(backgroundColor: Colors.red[700]),
-                //   child: Text("gyu"),
-                // ),
-                // SizedBox(height: 10),
 
                 ElevatedButton(
                   onPressed: _loginDonor,
@@ -141,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(child: Text('Don’t have an account?',style: TextStyle(fontWeight: FontWeight.bold),)),
+                    Center(child: Text('Don’t have an account?',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
                     TextButton(
                       onPressed: () {
                         Navigator.push(

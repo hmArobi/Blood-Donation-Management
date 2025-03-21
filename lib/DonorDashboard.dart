@@ -211,7 +211,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
                 children: [
                   Text(
                     _donorData!['name'],
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colors.blueGrey),
                   ),
                   SizedBox(height: 10),
                   Row(
@@ -240,24 +240,25 @@ class _DonorDashboardState extends State<DonorDashboard> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  Text("Blood Group: ${_donorData!['bloodGroup']}"),
-                  Text("Contact: ${_donorData!['contact']}"),
-                  Text("District: ${_donorData!['district']}"),
+                  Text("Blood Group: ${_donorData!['bloodGroup']}",style: TextStyle(color: Colors.black),),
+                  Text("Contact: ${_donorData!['contact']}",style: TextStyle(color: Colors.black),),
+                  Text("Gender: ${_donorData!['gender']}",style: TextStyle(color: Colors.black),),
+                  Text("District: ${_donorData!['district']}",style: TextStyle(color: Colors.black),),
                   Row(
                     children: [
-                      Text("Last Donation Date: "),
+                      Text("Last Donation Date: ",style: TextStyle(color: Colors.black),),
                       Text(
                         _donorData!['lastDonationDate'] != null
                             ? DateFormat('dd MMM yyyy').format((_donorData!['lastDonationDate'] as Timestamp).toDate())
                             : 'N/A',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.black),
                       ),
                     ],
                   ),
                   SizedBox(height: 20),
                   Text(
                     "Donation History:",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.black),
                   ),
                   Expanded(
                     child: ListView.builder(
@@ -269,11 +270,12 @@ class _DonorDashboardState extends State<DonorDashboard> {
                         shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12), // Rounded corners
                         ),
+                         color: Colors.blueGrey[400],
 
                          child:  ListTile(
-                        leading: Icon(Icons.calendar_today, color: Colors.blueGrey), // Added icon
+                        leading: Icon(Icons.calendar_today, color: Colors.black87), // Added icon
                           title: Text(DateFormat('dd MMM yyyy').format(_donationHistory[index]),
-                        style:TextStyle(fontWeight:FontWeight.bold),
+                        style:TextStyle(fontWeight:FontWeight.bold, color: Colors.black87),
                           ),
                         ), // Fix: Added missing closing parenthesis
                         );
