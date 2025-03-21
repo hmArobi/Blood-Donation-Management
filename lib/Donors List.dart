@@ -156,7 +156,8 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                             shape: BoxShape.circle,
                           ),
                           padding: EdgeInsets.all(8),
-                          child: Icon(Icons.person, color: Colors.white)),
+                          child: Icon(Icons.person, color: Colors.white)
+                      ),
                       title: Text(donor['name'], style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

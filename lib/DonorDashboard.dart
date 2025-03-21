@@ -37,6 +37,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
     }
   }
 
+  // Fix: Corrected method name to _updateLastDonationDate
   Future<void> _updateLastDonationDate(DateTime newDate) async {
     if (_user != null) {
       await _firestore.collection('donors').doc(_user!.uid).update({
@@ -51,6 +52,14 @@ class _DonorDashboardState extends State<DonorDashboard> {
     if (_donorData == null || _donorData!['lastDonationDate'] == null) return true;
     DateTime lastDonationDate = (_donorData!['lastDonationDate'] as Timestamp).toDate();
     return DateTime.now().difference(lastDonationDate).inDays >= 120;
+  }
+
+  // New method to calculate remaining days until available
+  int _calculateRemainingDays() {
+    if (_donorData == null || _donorData!['lastDonationDate'] == null) return 0;
+    DateTime lastDonationDate = (_donorData!['lastDonationDate'] as Timestamp).toDate();
+    int daysSinceLastDonation = DateTime.now().difference(lastDonationDate).inDays;
+    return 120 - daysSinceLastDonation;
   }
 
   Future<void> _changePassword() async {
@@ -205,13 +214,30 @@ class _DonorDashboardState extends State<DonorDashboard> {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    _isEligible() ? "AVAILABLE" : "RECHARGING",
-                    style: TextStyle(
-                      color: _isEligible() ? Colors.green[800] : Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        _isEligible() ? "AVAILABLE" : "RECHARGING",
+                        style: TextStyle(
+                          color: _isEligible() ? Colors.green[800] : Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+
+                      // Add countdown if the donor is recharging
+                      if (!_isEligible())
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            "(${_calculateRemainingDays()} days left)",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                   SizedBox(height: 20),
                   Text("Blood Group: ${_donorData!['bloodGroup']}"),
@@ -237,8 +263,19 @@ class _DonorDashboardState extends State<DonorDashboard> {
                     child: ListView.builder(
                       itemCount: _donationHistory.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(DateFormat('dd MMM yyyy').format(_donationHistory[index])),
+                        return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8.0), // Added card margin
+                        elevation: 4, // Card shadow effect
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12), // Rounded corners
+                        ),
+
+                         child:  ListTile(
+                        leading: Icon(Icons.calendar_today, color: Colors.blueGrey), // Added icon
+                          title: Text(DateFormat('dd MMM yyyy').format(_donationHistory[index]),
+                        style:TextStyle(fontWeight:FontWeight.bold),
+                          ),
+                        ), // Fix: Added missing closing parenthesis
                         );
                       },
                     ),
@@ -249,16 +286,50 @@ class _DonorDashboardState extends State<DonorDashboard> {
             Positioned(
               top: 16.0,
               right: 16.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey,
-                  shape: BoxShape.circle,
+              child: PopupMenuButton<String>(
+                icon: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: EdgeInsets.all(8),
+                  child: Icon(
+                      Icons.person, size: 30, color: Colors.black87),
                 ),
-                padding: EdgeInsets.all(8),
-                child: IconButton(
-                  icon: Icon(Icons.person, size: 30, color: Colors.black87),
-                  onPressed: () => _showProfileOptions(context),
-                ),
+                onSelected: (String value) {
+                  if (value == 'update_last_donation_date') {
+                    _selectLastDonationDate(context);
+                  } else if (value == 'change_password') {
+                    _changePassword();
+                  } else if (value == 'delete_account') {
+                    _deleteAccount();
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'update_last_donation_date',
+                      child: ListTile(
+                        leading: Icon(Icons.calendar_today),
+                        title: Text('Update Last Donation Date'),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'change_password',
+                      child: ListTile(
+                        leading: Icon(Icons.lock),
+                        title: Text('Change Password'),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'delete_account',
+                      child: ListTile(
+                        leading: Icon(Icons.delete),
+                        title: Text('Delete Account'),
+                      ),
+                    ),
+                  ];
+                },
               ),
             ),
           ],
