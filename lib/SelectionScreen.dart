@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'BackgroundGradient.dart';
+import 'Donors List.dart';
 import 'LoginScreen.dart';
 
 
@@ -35,10 +35,10 @@ class SelectionScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Navigate to Blood Seeker Page
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => SeekerDashboardScreen()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SeekerDashboard()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red[700]),
                 child: Text("Find a Blood Donor", style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold)),
