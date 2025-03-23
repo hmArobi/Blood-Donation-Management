@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'DonorDashboard.dart';
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -119,38 +121,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 10),
 
                     // Blood Group Dropdown
-                    Container(
-                      child: DropdownButtonFormField<String>(
-                        value: selectedBloodGroup,
-                        decoration: InputDecoration(labelText: 'Blood Group',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                    DropdownButtonFormField<String>(
+                      value: selectedBloodGroup,
+                      decoration: InputDecoration(labelText: 'Blood Group',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        style: TextStyle(color: Colors.black),
-                        dropdownColor: Colors.white,
-                        items: bloodGroups.map((group) => DropdownMenuItem(value: group, child: Text(group))).toList(),
-                        onChanged: (value) => setState(() => selectedBloodGroup = value),
-                        validator: (value) => value == null ? 'Select your blood group' : null,
                       ),
+                      style: TextStyle(color: Colors.black),
+                      dropdownColor: Colors.white,
+                      items: bloodGroups.map((group) => DropdownMenuItem(value: group, child: Text(group))).toList(),
+                      onChanged: (value) => setState(() => selectedBloodGroup = value),
+                      validator: (value) => value == null ? 'Select your blood group' : null,
                     ),
                     SizedBox(height: 10),
 
                     // Gender Select
-                    Container(
-                      child: DropdownButtonFormField<String>(
-                        value: selectedGender,
-                        decoration: InputDecoration(labelText: 'Gender',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                    DropdownButtonFormField<String>(
+                      value: selectedGender,
+                      decoration: InputDecoration(labelText: 'Gender',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        style: TextStyle(color: Colors.black),
-                        dropdownColor: Colors.white,
-                        items: genders.map((gender) => DropdownMenuItem(value: gender, child: Text(gender))).toList(),
-                        onChanged: (value) => setState(() => selectedGender = value),
-                        validator: (value) => value == null ? 'Select your gender' : null,
                       ),
+                      style: TextStyle(color: Colors.black),
+                      dropdownColor: Colors.white,
+                      items: genders.map((gender) => DropdownMenuItem(value: gender, child: Text(gender))).toList(),
+                      onChanged: (value) => setState(() => selectedGender = value),
+                      validator: (value) => value == null ? 'Select your gender' : null,
                     ),
                     SizedBox(height: 10),
 
