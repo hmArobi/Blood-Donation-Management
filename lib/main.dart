@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         primaryColor: Colors.red,
         appBarTheme: AppBarTheme(backgroundColor: Colors.red, foregroundColor: Colors.white),
