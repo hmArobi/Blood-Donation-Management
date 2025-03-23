@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'BackgroundGradient.dart';
 
 class DonorDashboard extends StatefulWidget {
+  const DonorDashboard({super.key});
+
   @override
   _DonorDashboardState createState() => _DonorDashboardState();
 }
@@ -64,7 +66,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
 
   //method to change password
   Future<void> _changePassword() async {
-    final TextEditingController _newPasswordController = TextEditingController();
+    final TextEditingController newPasswordController = TextEditingController();
 
     showDialog(
       context: context,
@@ -72,7 +74,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
         return AlertDialog(
           title: Text("Change Password"),
           content: TextField(
-            controller: _newPasswordController,
+            controller: newPasswordController,
             obscureText: true,
             decoration: InputDecoration(labelText: 'New Password'),
           ),
@@ -83,9 +85,9 @@ class _DonorDashboardState extends State<DonorDashboard> {
             ),
             TextButton(
               onPressed: () async {
-                if (_newPasswordController.text.isNotEmpty) {
+                if (newPasswordController.text.isNotEmpty) {
                   try {
-                    await _user!.updatePassword(_newPasswordController.text);
+                    await _user!.updatePassword(newPasswordController.text);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Password updated successfully')),
                     );
