@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'BackgroundGradient.dart';
 
 class SeekerDashboard extends StatefulWidget {
+  const SeekerDashboard({super.key});
+
   @override
   _SeekerDashboardState createState() => _SeekerDashboardState();
 }
@@ -71,31 +73,29 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                 children: [
 
                   // Blood Group Filter
-                  Container(
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedBloodGroup,
-                      decoration: InputDecoration(
-                        labelText: 'Filter by Blood Group',
-                        prefixIcon: Icon(Icons.bloodtype, color: Colors.red[700]),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                  DropdownButtonFormField<String>(
+                    value: _selectedBloodGroup,
+                    decoration: InputDecoration(
+                      labelText: 'Filter by Blood Group',
+                      prefixIcon: Icon(Icons.bloodtype, color: Colors.red[700]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      style: TextStyle(color: Colors.black),
-                      dropdownColor: Colors.white,
-                      items: ['All', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((group) {
-                        return DropdownMenuItem(
-                          value: group,
-                          child: Text(group,style: TextStyle(color: Colors.black)),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedBloodGroup = value!;
-                          _filterDonors();
-                        });
-                      },
                     ),
+                    style: TextStyle(color: Colors.black),
+                    dropdownColor: Colors.white,
+                    items: ['All', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((group) {
+                      return DropdownMenuItem(
+                        value: group,
+                        child: Text(group,style: TextStyle(color: Colors.black)),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedBloodGroup = value!;
+                        _filterDonors();
+                      });
+                    },
                   ),
 
                   SizedBox(height: 10),
