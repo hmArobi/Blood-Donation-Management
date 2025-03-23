@@ -37,7 +37,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
     }
   }
 
-  // Fix: Corrected method name to _updateLastDonationDate
+  // method to Update Last Donation Date
   Future<void> _updateLastDonationDate(DateTime newDate) async {
     if (_user != null) {
       await _firestore.collection('donors').doc(_user!.uid).update({
@@ -54,7 +54,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
     return DateTime.now().difference(lastDonationDate).inDays >= 120;
   }
 
-  // New method to calculate remaining days until available
+  // method to calculate remaining days until available
   int _calculateRemainingDays() {
     if (_donorData == null || _donorData!['lastDonationDate'] == null) return 0;
     DateTime lastDonationDate = (_donorData!['lastDonationDate'] as Timestamp).toDate();
@@ -62,6 +62,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
     return 120 - daysSinceLastDonation;
   }
 
+  //method to change password
   Future<void> _changePassword() async {
     final TextEditingController _newPasswordController = TextEditingController();
 
@@ -108,6 +109,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
     );
   }
 
+  // method to delete account
   Future<void> _deleteAccount() async {
     showDialog(
       context: context,
@@ -128,7 +130,8 @@ class _DonorDashboardState extends State<DonorDashboard> {
                   // Delete from Firebase Authentication
                   await _user!.delete();
                   Navigator.pop(context);
-                  Navigator.pop(context); // Go back to the previous screen
+                  Navigator.pop(context);
+                  Navigator.pop(context);// Go back to the previous screen
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Error: ${e.toString()}')),
@@ -143,6 +146,8 @@ class _DonorDashboardState extends State<DonorDashboard> {
     );
   }
 
+
+  // method to select last donation date
   Future<void> _selectLastDonationDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -155,41 +160,6 @@ class _DonorDashboardState extends State<DonorDashboard> {
     }
   }
 
-  void _showProfileOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.lock),
-              title: Text('Change Password'),
-              onTap: () {
-                Navigator.pop(context); // Close the bottom sheet
-                _changePassword();
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.calendar_today),
-              title: Text('Update Last Donation Date'),
-              onTap: () {
-                Navigator.pop(context); // Close the bottom sheet
-                _selectLastDonationDate(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.delete),
-              title: Text('Delete Account'),
-              onTap: () {
-                Navigator.pop(context); // Close the bottom sheet
-                _deleteAccount();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -265,19 +235,19 @@ class _DonorDashboardState extends State<DonorDashboard> {
                       itemCount: _donationHistory.length,
                       itemBuilder: (context, index) {
                         return Card(
-                            margin: EdgeInsets.symmetric(vertical: 8.0), // Added card margin
-                        elevation: 4, // Card shadow effect
-                        shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12), // Rounded corners
-                        ),
-                         color: Colors.blueGrey[400],
-
-                         child:  ListTile(
-                        leading: Icon(Icons.calendar_today, color: Colors.black87), // Added icon
-                          title: Text(DateFormat('dd MMM yyyy').format(_donationHistory[index]),
-                        style:TextStyle(fontWeight:FontWeight.bold, color: Colors.black87),
+                          margin: EdgeInsets.symmetric(vertical: 8.0), // Added card margin
+                          elevation: 4, // Card shadow effect
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12), // Rounded corners
                           ),
-                        ), // Fix: Added missing closing parenthesis
+                          color: Colors.blueGrey[400],
+
+                          child:  ListTile(
+                            leading: Icon(Icons.calendar_today, color: Colors.black87), // Added icon
+                            title: Text(DateFormat('dd MMM yyyy').format(_donationHistory[index]),
+                              style:TextStyle(fontWeight:FontWeight.bold, color: Colors.black87),
+                            ),
+                          ),
                         );
                       },
                     ),

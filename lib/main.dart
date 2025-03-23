@@ -37,16 +37,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light().copyWith(
         primaryColor: Colors.red,
         appBarTheme: AppBarTheme(backgroundColor: Colors.red, foregroundColor: Colors.white),
-        // textTheme: TextTheme(
-        //   bodyMedium: TextStyle(color: Colors.black), // Set default text color to black
-        // ),
+
       ),
       darkTheme: ThemeData.dark().copyWith(
         primaryColor: Colors.red[900],
         appBarTheme: AppBarTheme(backgroundColor: Colors.red[900], foregroundColor: Colors.white),
-        // textTheme: TextTheme(
-        //   bodyMedium: TextStyle(color: Colors.white), // Set default text color to white for dark mode
-        // ),
+
       ),
       themeMode: ThemeMode.system,
       home: HomeScreen(),

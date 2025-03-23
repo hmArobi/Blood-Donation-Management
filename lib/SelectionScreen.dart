@@ -8,7 +8,10 @@ class SelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text("Select Role",style: TextStyle(fontSize: 28,fontWeight: FontWeight.bold),))),
+      appBar: AppBar(title: Center(child: Text("Select Role",
+        style: TextStyle(fontSize: 28,
+          fontWeight: FontWeight.bold),
+      ))),
       body:BackgroundGradient(
         child: Center(
           child: Column(  // Column directly inside Center
@@ -19,7 +22,7 @@ class SelectionScreen extends StatelessWidget {
                 width: 500,  // Reduced width
                 height: 270,  // Reduced height
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   // Navigate to Donor Registration Page
@@ -29,7 +32,10 @@ class SelectionScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red[700]),
-                child: Text("Using as a Donor", style: TextStyle(color: Colors.white ,fontSize: 18,fontWeight: FontWeight.bold)),
+                child: Text("Using as a Donor", style: TextStyle(color: Colors.white ,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)
+                ),
               ),
               SizedBox(height: 10),
               ElevatedButton(
@@ -41,7 +47,10 @@ class SelectionScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red[700]),
-                child: Text("Find a Blood Donor", style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold)),
+                child: Text("Find a Blood Donor", style: TextStyle(color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)
+                ),
               ),
             ],
           ),
