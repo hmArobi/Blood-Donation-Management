@@ -1,14 +1,14 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:blood_bank/BackgroundGradient.dart';
 import 'package:blood_bank/DonorDashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'SignUpScreen.dart';
 
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
         errorMessage= 'Incorrect Password';
       }
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text('Error: $errorMessage')),
       );
     }
 
