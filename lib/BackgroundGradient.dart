@@ -8,8 +8,8 @@ class BackgroundGradient extends StatelessWidget {
   const BackgroundGradient({
     required this.child,
     this.padding = EdgeInsets.zero,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
