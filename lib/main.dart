@@ -14,6 +14,12 @@ void main()async
   // Initialize Firebase based on the platform
   if (Platform.isAndroid) {
     await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: 'AIzaSyATWCOkuZ6IqUurXeurm7oQ5a13BabSkw8',
+          appId: '1:710867091708:android:c18305bb86d21153d0d779',
+          messagingSenderId: '710867091708',
+          projectId: 'project-fb3-3e679',
+          ),
     );
   } else {
     await Firebase.initializeApp();
